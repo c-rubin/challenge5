@@ -1,21 +1,49 @@
-name: Java Build
+name: Setup
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up JDK
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'adopt'
-        java-version: '11'
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: adopt
+          java-version: '11'
 
-    - name: Build with custom script
-      run: |
-        ./build-script.sh
+      - name: Lint Action
+        uses: wearerequired/lint-action@v2.3.0
+            
+
+      # - name: Download SpotBugs
+      #   run: |
+      #     wget https://repo.maven.apache.org/maven2/com/github/spotbugs/spotbugs/4.5.3/spotbugs-4.5.3.tgz
+      #     tar -xvf spotbugs-4.5.3.tgz
+
+      # - name: Run SpotBugs
+      #   run: |
+      #     java -jar spotbugs-4.5.3/lib/spotbugs.jar -textui -effort:max -xml:withMessages -output spotbugs-report.xml ./
+          
+      - name: Compile
+        run: |
+          javac -cp .:./lib/junit-4.13.2.jar:./lib/hamcrest-core1.3.jar GradeTest.java GradeCalculator.java Grade.java
+        shell: bash
+        
+      - name: Run unit tests
+        run: |
+          # javac -cp .:./lib/junit-4.13.2.jar:./lib/hamcrest-core1.3.jar GradeTest.java GradeCalculator.java Grade.java
+          java -cp .:./lib/junit-4.13.2.jar:./lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore GradeTest
+          # sudo service mysql start
+          # sudo mysql -u root -proot -e "CREATE DATABASE IF NOT EXISTS actionsJava;"
+          # sudo mysql -u root -proot actionsJava < database.sql
+          # javac Main.java
+          # echo 1 | java -cp .:mysql-connector-java-8.2.0.jar Main
+          # java -cp .:mysql-connector-java-8.2.0.jar Main < input.txt
+        shell: bash
