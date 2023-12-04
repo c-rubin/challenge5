@@ -33,3 +33,8 @@ jobs:
           java -cp .:./lib/junit-4.13.2.jar:./lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore GradeTest
 
         shell: bash
+
+      - name: Compile
+        run: |
+          javac -cp .:./lib/junit-4.13.2.jar:.lib/hamcrest-core1.3.jar:./lib/json-java-x.x.x.jar Main.java
+        shell: bash
