@@ -1,0 +1,40 @@
+name: Setup
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: adopt
+          java-version: '11'
+
+      - name: Lint Action
+        uses: wearerequired/lint-action@v2.3.0
+
+
+
+      - name: Compile
+        run: |
+          javac -cp .:./lib/junit-4.13.2.jar:./lib/hamcrest-core1.3.jar Main.java
+        shell: bash
+
+      - name: Run unit tests
+        run: |
+          java -cp .:./lib/junit-4.13.2.jar:./lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore GradeTest
+
+        shell: bash
+
+      - name: Compile
+        run: |
+          javac -cp .:./lib/junit-4.13.2.jar:.lib/hamcrest-core1.3.jar:./lib/json-java-x.x.x.jar Main.java
+        shell: bash
