@@ -24,10 +24,10 @@ jobs:
           javac -cp .:./lib/json-20231013.jar:./api Main.java ./api/SimpleHttpClient.java ./api/WeatherAPI.java
         shell: bash
 
-      # - name: Run unit tests
-      #   run: |
-      #     java -cp .:./lib/json-20231013.jar:./api GradeTest
-      #   shell: bash
+      - name: Run unit tests
+        run: |
+          java -cp .:./lib/json-20231013.jar:./api GradeTest
+        shell: bash
 
       # - name: Compile
       #   run: |
