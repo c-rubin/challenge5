@@ -21,12 +21,12 @@ jobs:
 
       - name: Compile
         run: |
-          javac -cp .:./lib/json-20231013.jar:./api Main.java ./api/SimpleHttpClient.java ./api/WeatherAPI.java
+          javac -cp .:./lib/json-20231013.jar:./api ./main/Main.java ./api/SimpleHttpClient.java ./api/WeatherAPI.java
         shell: bash
 
       - name: Run unit tests
         run: |
-          java -cp .:./lib/json-20231013.jar:./api Main
+          java -cp .:./lib/json-20231013.jar:./api ./main/Main
         shell: bash
 
       # - name: Compile
