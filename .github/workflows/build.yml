@@ -31,5 +31,5 @@ jobs:
 
       # - name: Compile
       #   run: |
-      #     javac -cp .:./lib/junit-4.13.2.jar:.lib/hamcrest-core1.3.jar:./lib/json-java-x.x.x.jar Main.java
+      #     javac -cp .:./lib/junit-4.13.2.jar:.lib/hamcrest-core1.3.jar:./lib/json-java-x.x.x.jar main.Main.java
       #   shell: bash
