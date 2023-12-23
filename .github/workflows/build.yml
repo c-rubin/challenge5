@@ -26,7 +26,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          java -cp .:./lib/json-20231013.jar:./api ./main/Main
+          java -cp .:./lib/json-20231013.jar:./api main/Main
         shell: bash
 
       # - name: Compile
