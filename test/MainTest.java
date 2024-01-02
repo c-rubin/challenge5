@@ -21,7 +21,7 @@ public class MainTest {
     @Test
     public void testSimpleHttpClient() {
         try {
-            String response = SimpleHttpClient.getResponse("https://www.example.com");
+            String response = SimpleHttpClient.getResponse("https://tourism.opendatahub.com/v1/Weather?");
             assertNotNull("SimpleHttpClient response should not be null", response);
             assertTrue("SimpleHttpClient response should not be empty", response.length() > 0);
         } catch (Exception e) {
