@@ -15,7 +15,6 @@ public class WeatherAPI {
             return json.getJSONArray("Stationdata");
         } catch (Exception ex) {
             ex.printStackTrace();
-            // Log an error message or throw a custom exception if necessary
         }
         return null;
     }
