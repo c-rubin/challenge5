@@ -1,6 +1,6 @@
-import org.json.JSONObject;
-import org.json.JSONArray;
+package validator;
 
+import org.json.JSONObject;
 import java.sql.Timestamp;
 import java.util.List;
 

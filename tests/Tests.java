@@ -1,158 +1,84 @@
+package tests;
+
 import api.WeatherAPI;
 import api.WeatherApiV2;
 import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
 import validator.DataValidator;
 
 import java.util.List;
 
-public class Main {
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.*;
 
-    final static String rawV1 = "{\"_Meta\":{\"Id\":\"85590\",\"Type\":\"weather\",\"LastUpdate\":\"2024-01-06T10:00:00\",\"Source\":\"siag\",\"Reduced\":false,\"UpdateInfo\":null},\"Self\":\"Weather/85590\",\"Id\":85590,\"date\":\"2024-01-06T10:00:00\",\"evolutiontitle\":null,\"evolution\":null,\"language\":null,\"Conditions\":[],\"Forecast\":[],\"Mountain\":[],\"Stationdata\":[{\"date\":\"2024-01-06T00:00:00\",\"Id\":3,\"CityName\":\"Bolzano / Bozen\",\"WeatherCode\":\"j\",\"WeatherDesc\":\"Dull, slightly rain\",\"WeatherImgUrl\":\"http://daten.buergernetz.bz.it/services/weather/graphics/icons/imgsource/wetter/icon_10.png\",\"Weathercode\":\"j\",\"Weatherdesc\":\"Dull, slightly rain\",\"WeatherImgurl\":\"http://daten.buergernetz.bz.it/services/weather/graphics/icons/imgsource/wetter/icon_10.png\",\"MinTemp\":0,\"Maxtemp\":6,\"MaxTemp\":6},{\"date\":\"2024-01-07T00:00:00\",\"Id\":3,\"CityName\":\"Bolzano / Bozen\",\"WeatherCode\":\"e\",\"WeatherDesc\":\"Dull\",\"WeatherImgUrl\":\"http://daten.buergernetz.bz.it/services/weather/graphics/icons/imgsource/wetter/icon_5.png\",\"Weathercode\":\"e\",\"Weatherdesc\":\"Dull\",\"WeatherImgurl\":\"http://daten.buergernetz.bz.it/services/weather/graphics/icons/imgsource/wetter/icon_5.png\",\"MinTemp\":2,\"Maxtemp\":8,\"MaxTemp\":8}],\"LicenseInfo\":{\"License\":\"CC0\",\"LicenseHolder\":\"https://provinz.bz.it/wetter\",\"Author\":\"\",\"ClosedData\":false}}";
+public class Tests {
 
-    public static void main(String[] args) {
-        v1();
-        v1Raw();
-        v2();
-        v2Raw();
+    WeatherAPI weatherAPIv1;
+    WeatherApiV2 weatherAPIv2;
+
+    //v2 strings are at the end because they're too long
+    final static String validV1 = "{\"_Meta\":{\"Id\":\"85590\",\"Type\":\"weather\",\"LastUpdate\":\"2024-01-06T10:00:00\",\"Source\":\"siag\",\"Reduced\":false,\"UpdateInfo\":null},\"Self\":\"Weather/85590\",\"Id\":85590,\"date\":\"2024-01-06T10:00:00\",\"evolutiontitle\":null,\"evolution\":null,\"language\":null,\"Conditions\":[],\"Forecast\":[],\"Mountain\":[],\"Stationdata\":[{\"date\":\"2024-01-06T00:00:00\",\"Id\":3,\"CityName\":\"Bolzano / Bozen\",\"WeatherCode\":\"j\",\"WeatherDesc\":\"Dull, slightly rain\",\"WeatherImgUrl\":\"http://daten.buergernetz.bz.it/services/weather/graphics/icons/imgsource/wetter/icon_10.png\",\"Weathercode\":\"j\",\"Weatherdesc\":\"Dull, slightly rain\",\"WeatherImgurl\":\"http://daten.buergernetz.bz.it/services/weather/graphics/icons/imgsource/wetter/icon_10.png\",\"MinTemp\":0,\"Maxtemp\":6,\"MaxTemp\":6},{\"date\":\"2024-01-07T00:00:00\",\"Id\":3,\"CityName\":\"Bolzano / Bozen\",\"WeatherCode\":\"e\",\"WeatherDesc\":\"Dull\",\"WeatherImgUrl\":\"http://daten.buergernetz.bz.it/services/weather/graphics/icons/imgsource/wetter/icon_5.png\",\"Weathercode\":\"e\",\"Weatherdesc\":\"Dull\",\"WeatherImgurl\":\"http://daten.buergernetz.bz.it/services/weather/graphics/icons/imgsource/wetter/icon_5.png\",\"MinTemp\":2,\"Maxtemp\":8,\"MaxTemp\":8}],\"LicenseInfo\":{\"License\":\"CC0\",\"LicenseHolder\":\"https://provinz.bz.it/wetter\",\"Author\":\"\",\"ClosedData\":false}}";
+    @Test
+    public void apisShouldReturnValidData(){
+        //v1
+        assertNotNull("Weather API data should not be null", weatherAPIv1.getData());
+        assertFalse("Weather API data should not be empty", weatherAPIv1.getData().isEmpty());
+        //raw
+        assertNotNull("Weather API data should not be null", weatherAPIv1.getData(validV1));
+        assertFalse("Weather API data should not be empty", weatherAPIv1.getData(validV1).isEmpty());
+
+        //v2
+        assertNotNull("Weather API data should not be null", weatherAPIv2.getData());
+        assertFalse("Weather API data should not be empty", weatherAPIv2.getData().isEmpty());
+        //raw
+        assertNotNull("Weather API data should not be null", weatherAPIv2.getData(validV2));
+        assertFalse("Weather API data should not be empty", weatherAPIv2.getData(validV2).isEmpty());
     }
 
-    static void v1(){
-        try {
-            // Fetch data from the Temperature API
-            WeatherAPI temperatureAPI = new WeatherAPI();
+    @Test
+    public void validDataShouldReturnTrue(){
+        //v1
+        String timestampField = "date";
+        String[] values = {"MinTemp","Maxtemp","MaxTemp"};
+        double valueAllowancePerDAY = 10.0;
+        List<JSONObject> data = weatherAPIv1.getData(validV1);
 
-            //JSON ARRAY
-            List<JSONObject> data = temperatureAPI.getData();
+        boolean isDataValid = DataValidator.validateData(
+                data,
+                timestampField,
+                values,
+                valueAllowancePerDAY
+        );
 
-            // Configure and validate temperature data
-            String temperatureTimestampField = "date";
-            String[] values = {"MinTemp","Maxtemp","MaxTemp"};
-            double valueAllowancePerDAY = 10.0;
+        assertTrue(isDataValid);
 
-            boolean isTemperatureDataValid = DataValidator.validateData(
-                    data,
-                    temperatureTimestampField,
-                    values,
+        //v2
+        String[] values2 = {"mvalue"};
+        timestampField = "mvalidtime";
+        List<List<JSONObject>> data2 = weatherAPIv2.getData(validV2);
+
+        for(List<JSONObject> x : data2) {
+            isDataValid = DataValidator.validateData(
+                    x,
+                    timestampField,
+                    values2,
                     valueAllowancePerDAY
             );
 
-            if (isTemperatureDataValid) {
-                System.out.println("Temperature data is valid.");
-            } else {
-                System.out.println("Temperature data contains invalid points.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            assertTrue(isDataValid);
         }
-
-        System.out.println("DONE V1");
     }
 
-    static void v1Raw(){
-        try {
-            // Fetch data from the Temperature API
-            WeatherAPI temperatureAPI = new WeatherAPI();
-
-            //JSON ARRAY
-            List<JSONObject> data = temperatureAPI.getData(rawV1);
-
-            // Configure and validate temperature data
-            String temperatureTimestampField = "date";
-            String[] values = {"MinTemp","Maxtemp","MaxTemp"};
-            double valueAllowancePerDAY = 10.0;
-
-            boolean isTemperatureDataValid = DataValidator.validateData(
-                    data,
-                    temperatureTimestampField,
-                    values,
-                    valueAllowancePerDAY
-            );
-
-            if (isTemperatureDataValid) {
-                System.out.println("Temperature data is valid.");
-            } else {
-                System.out.println("Temperature data contains invalid points.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("DONE V1 RAW");
-    }
-
-    public static void v2() {
-        try {
-            // Fetch data from the Temperature API
-            WeatherApiV2 temperatureAPI = new WeatherApiV2();
-            //JSON ARRAY
-            List<List<JSONObject>> data = temperatureAPI.getData();
-
-            // Configure and validate temperature data
-            String[] values = {"mvalue"};
-            String temperatureTimestampField = "mvalidtime";
-            double valueAllowancePerDAY = 10.0;
-            for(List<JSONObject> x : data) {
-                boolean isTemperatureDataValid = DataValidator.validateData(
-                        x,
-                        temperatureTimestampField,
-                        values,
-                        valueAllowancePerDAY
-                );
-
-
-                if (isTemperatureDataValid) {
-                    System.out.println("Temperature data is valid.");
-                } else {
-                    System.out.println("Temperature data contains invalid points.");
-                }
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("DONE V2");
-    }
-
-    public static void v2Raw() {
-        try {
-            // Fetch data from the Temperature API
-            WeatherApiV2 temperatureAPI = new WeatherApiV2();
-            //JSON ARRAY
-            List<List<JSONObject>> data = temperatureAPI.getData(rawV2);
-
-            // Configure and validate temperature data
-            String[] values = {"mvalue"};
-            String temperatureTimestampField = "mvalidtime";
-            double valueAllowancePerDAY = 10.0;
-            for(List<JSONObject> x : data) {
-                boolean isTemperatureDataValid = DataValidator.validateData(
-                        x,
-                        temperatureTimestampField,
-                        values,
-                        valueAllowancePerDAY
-                );
-
-
-                if (isTemperatureDataValid) {
-                    System.out.println("Temperature data is valid.");
-                } else {
-                    System.out.println("Temperature data contains invalid points.");
-                }
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("DONE V2 RAW");
+    @Before
+    public void initializeApiClasses(){
+        weatherAPIv1 = new WeatherAPI();
+        weatherAPIv2 = new WeatherApiV2();
     }
 
 
-    //at the end coz its too long
-    final static String rawV2 = "{\n" +
+    final static String validV2 = "{\n" +
             "  \"offset\": 0,\n" +
             "  \"data\": {\n" +
             "    \"MeteoStation\": {\n" +

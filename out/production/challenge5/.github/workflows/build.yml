@@ -1,0 +1,35 @@
+name: Setup
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: adopt
+          java-version: '11'
+
+
+      - name: Compile
+        run: |
+          javac -cp .:./lib/json-20231013.jar:./api ./main/Main.java ./api/SimpleHttpClient.java ./api/WeatherAPI.java
+        shell: bash
+
+      - name: Run unit tests
+        run: |
+          java -cp .:./lib/json-20231013.jar:./api main/Main
+        shell: bash
+
+      # - name: Compile
+      #   run: |
+      #     javac -cp .:./lib/junit-4.13.2.jar:.lib/hamcrest-core1.3.jar:./lib/json-java-x.x.x.jar main.Main.java
+      #   shell: bash

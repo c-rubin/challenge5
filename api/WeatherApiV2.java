@@ -23,10 +23,6 @@ public class WeatherApiV2 {
             JSONObject stations = json.getJSONObject("data")
                     .getJSONObject("MeteoStation")
                     .getJSONObject("stations");
-//                    .getJSONObject("00390SF")
-//                    .getJSONObject("sdatatypes")
-//                    .getJSONObject("air-temperature")
-//                    .getJSONArray("tmeasurements");
 
             List<List<JSONObject>> stationsList = new ArrayList<>();
 
@@ -38,20 +34,48 @@ public class WeatherApiV2 {
                         .getJSONObject("air-temperature")
                         .getJSONArray("tmeasurements");
 
+                // Sort the list based on the "mvalidtime" field in each JSONObject
                 for(int j=0;j<x.length();j++){
                     measurements.add( (JSONObject) x.get(j));
                 }
                 measurements.sort(Comparator.comparing(o -> Timestamp.valueOf(o.getString("mvalidtime").replace(".000+0000",""))));
                 stationsList.add(measurements);
-//                System.out.println("ka");
             }
 
-            // Sort the list based on the "mvalidtime" field in each JSONObject
+
 
             return stationsList;
         }catch(Exception ex){
             System.out.println(ex);
         }
         return null;
+    }
+
+    public List<List<JSONObject>> getData(String raw){
+        JSONObject json = new JSONObject(raw);
+
+        JSONObject stations = json.getJSONObject("data")
+                .getJSONObject("MeteoStation")
+                .getJSONObject("stations");
+
+        List<List<JSONObject>> stationsList = new ArrayList<>();
+
+        for(String i : stations.keySet()){
+            List<JSONObject> measurements = new ArrayList<>();
+
+            JSONArray x = stations.getJSONObject(i)
+                    .getJSONObject("sdatatypes")
+                    .getJSONObject("air-temperature")
+                    .getJSONArray("tmeasurements");
+
+            // Sort the list based on the "mvalidtime" field in each JSONObject
+            for(int j=0;j<x.length();j++){
+                measurements.add( (JSONObject) x.get(j));
+            }
+            measurements.sort(Comparator.comparing(o -> Timestamp.valueOf(o.getString("mvalidtime").replace(".000+0000",""))));
+            stationsList.add(measurements);
+        }
+
+        return stationsList;
     }
 }
