@@ -21,15 +21,15 @@ jobs:
 
       - name: Compile
         run: |
-          javac -cp .:./lib/json-20231013.jar:./api ./main/Main.java ./api/SimpleHttpClient.java ./api/WeatherAPI.java
+          javac -cp .:./lib/json-20231013.jar:./api Main.java ./api/SimpleHttpClient.java ./api/WeatherAPI.java
         shell: bash
 
       - name: Run unit tests
         run: |
-          java -cp .:./lib/json-20231013.jar:./api main/Main
+          java -cp .:./lib/json-20231013.jar:./api Main
         shell: bash
 
       # - name: Compile
       #   run: |
-      #     javac -cp .:./lib/junit-4.13.2.jar:.lib/hamcrest-core1.3.jar:./lib/json-java-x.x.x.jar main.Main.java
+      #     javac -cp .:./lib/junit-4.13.2.jar:.lib/hamcrest-core1.3.jar:./lib/json-java-x.x.x.jar Main.java
       #   shell: bash
