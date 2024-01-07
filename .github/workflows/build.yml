@@ -31,7 +31,7 @@ jobs:
 
       - name: Compile Tests
         run: |
-          javac -cp .:./lib/json-20231013.jar:./lib/junit-4.13.1.jar:./lib/hamcrest-core1.3.jar tests/Tests.java
+          javac -cp .:./lib/json-20231013.jar:./lib/junit-4.13.1.jar:./lib/hamcrest-core-1.3.jar tests/Tests.java
         shell: bash
 
       - name: Run Tests
