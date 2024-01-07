@@ -19,14 +19,24 @@ jobs:
           java-version: '11'
 
 
-      - name: Compile
+      - name: Compile Program
         run: |
           javac -cp .:./lib/json-20231013.jar:./api Main.java ./api/SimpleHttpClient.java ./api/WeatherAPI.java ./api/WeatherApiV2.java
         shell: bash
 
-      - name: Run program
+      - name: Run Program
         run: |
           java -cp .:./lib/json-20231013.jar:./api Main
+        shell: bash
+
+      - name: Compile Tests
+        run: |
+          javac -cp .:./lib/junit-4.13.2.jar:./lib/hamcrest-core1.3.jar Tests.java
+        shell: bash
+
+      - name: Run Tests
+        run: |
+          java -cp .:./lib/junit-4.13.2.jar:./lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore Tests
         shell: bash
 
       # - name: Compile
