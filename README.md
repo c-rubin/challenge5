@@ -35,3 +35,25 @@ The Data Validation Project is a Java application designed to retrieve, process,
 
    ```bash
    git clone https://github.com/your-username/weather-data-validation.git
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd weather-data-validation
+
+3. Compile and run:
+
+   ```bash
+   javac -cp . MainClass.java
+    java MainClass
+
+## Usage
+Modify the MainClass or create your own class to interact with the DataValidator, WeatherAPI, and WeatherApiV2 classes.
+
+## Contributing
+Contributions are welcome! If you'd like to contribute to the project, please follow these steps:
+- Fork the repository.
+- Create a new branch: git checkout -b feature/your-feature.
+- Commit your changes: git commit -m 'Add some feature'.
+- Push to the branch: git push origin feature/your-feature.
+- Submit a pull request.
