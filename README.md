@@ -1,16 +1,37 @@
-# Data Validator
+# Challenge 5: Data Validation Project
 
-This project is a Java-based solution for validating data received from Open Data Hub APIs. It includes a `DataValidator` component that checks a set of data points for values that increase faster than a configured speed.
+## Overview
 
-## Table of Contents
--[Introduction](#introduction)
--[Components](#components)
+The Data Validation Project is a Java application designed to retrieve, process, and validate weather data from two distinct API endpoints. The project ensures the integrity and reliability of the collected data through a systematic validation process.
 
-## Introduction
-The Open Data Hub Validation project aims to ensure the quality of data received from various sources. The `DataValidator` component is designed to work with any type of JSON object based on configurable parameters such as the timestamp field, value field, and allowed variation speed.
+## Key Features
 
-## Components
+- **Data Retrieval:**
+  - Utilizes the `SimpleHttpClient` class to make HTTP GET requests to external APIs, fetching weather-related data.
 
-### 1. DataValidator
+- **API Endpoints:**
+  - Default Weather API: Retrieves general weather data [Default API Link](https://tourism.opendatahub.com/v1/Weather?locfilter=3).
+  - Weather API v2: Retrieves air temperature measurements [Weather API v2 Link](https://mobility.api.opendatahub.com/v2/tree%2Cnode/MeteoStation/air-temperature/latest?).
 
-The `DataValidator` class provides a method to validate a set of data points in JSON format. It checks for values that deviate from the configured speed of change between consecutive data points.
+- **Data Processing:**
+  - The `WeatherAPI` and `WeatherApiV2` classes process the JSON responses from the respective APIs, extracting relevant information.
+
+- **Data Validation:**
+  - The core validation is handled by the `DataValidator` class.
+  - Iterates through the retrieved JSON data points and validates them based on specified criteria.
+
+- **Temporal Analysis:**
+  - Utilizes Java's `Timestamp` for accurate temporal analysis, calculating time differences in seconds and days.
+
+## Getting Started
+
+### Prerequisites
+
+- Java Development Kit (JDK) installed.
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/weather-data-validation.git
